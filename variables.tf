@@ -30,7 +30,7 @@ variable "description" {
 }
 
 variable "contexts" {
-  description = "Route Control Route Map contexts."
+  description = "Route Control Route Map contexts. Allowed values `action`:  `deny` or `permit`. Allowed values `order`: 0-9"
   type = list(object({
     name        = string
     description = optional(string, "")

@@ -7,7 +7,7 @@ content: |-
 
   # Terraform ACI Route Control Route Map
 
-  Description
+  Manages ACI Route Control Route Maps
 
   Location in GUI:
   `Tenants` » `XXX` » `Policies` » `Protocol` » `Route Maps for Route Control`

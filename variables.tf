@@ -69,4 +69,11 @@ variable "contexts" {
     error_message = "Allowed values Context `order`: 0-9."
   }
 
+  validation {
+    condition = alltrue([
+      for ctx in var.contexts : ctx.set_rule == null || can(regex("^[a-zA-Z0-9_.-]{0,64}$", ctx.set_rule))
+    ])
+    error_message = "Context Set rule `name`: Allowed characters: `a`-`z`, `A`-`Z`, `0`-`9`, `_`, `.`, `-`. Maximum characters: 64."
+  }
+
 }

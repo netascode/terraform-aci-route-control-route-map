@@ -1,19 +1,19 @@
+variable "tenant" {
+  description = "Tenant name."
+  type        = string
+
+  validation {
+    condition     = can(regex("^[a-zA-Z0-9_.-]{0,64}$", var.tenant))
+    error_message = "Allowed characters: `a`-`z`, `A`-`Z`, `0`-`9`, `_`, `.`, `-`. Maximum characters: 64."
+  }
+}
+
 variable "name" {
   description = "Route Control Route Map name."
   type        = string
 
   validation {
     condition     = can(regex("^[a-zA-Z0-9_.-]{0,64}$", var.name))
-    error_message = "Allowed characters: `a`-`z`, `A`-`Z`, `0`-`9`, `_`, `.`, `-`. Maximum characters: 64."
-  }
-}
-
-variable "tenant" {
-  description = "Route Control Route Map Tenant name."
-  type        = string
-
-  validation {
-    condition     = can(regex("^[a-zA-Z0-9_.-]{0,64}$", var.tenant))
     error_message = "Allowed characters: `a`-`z`, `A`-`Z`, `0`-`9`, `_`, `.`, `-`. Maximum characters: 64."
   }
 }
@@ -30,7 +30,7 @@ variable "description" {
 }
 
 variable "contexts" {
-  description = "Route Control Route Map contexts. Allowed values `action`:  `deny` or `permit`. Allowed values `order`: 0-9"
+  description = "Route Control Route Map contexts. Allowed values `action`:  `deny` or `permit`. Allowed values `order`: 0-9."
   type = list(object({
     name        = string
     description = optional(string, "")
@@ -43,7 +43,7 @@ variable "contexts" {
 
   validation {
     condition = alltrue([
-      for ctx in var.contexts : ctx.name == null || can(regex("^[a-zA-Z0-9_.-]{0,64}$", ctx.name))
+      for ctx in var.contexts : can(regex("^[a-zA-Z0-9_.-]{0,64}$", ctx.name))
     ])
     error_message = "Context `name`: Allowed characters: `a`-`z`, `A`-`Z`, `0`-`9`, `_`, `.`, `-`. Maximum characters: 64."
   }
@@ -76,4 +76,10 @@ variable "contexts" {
     error_message = "Context Set rule `name`: Allowed characters: `a`-`z`, `A`-`Z`, `0`-`9`, `_`, `.`, `-`. Maximum characters: 64."
   }
 
+  validation {
+    condition = alltrue(flatten([
+      for ctx in var.contexts : [for rule in coalesce(ctx.match_rules, []) : can(regex("^[a-zA-Z0-9_.-]{0,64}$", rule))]
+    ]))
+    error_message = "Context match rule: Allowed characters: `a`-`z`, `A`-`Z`, `0`-`9`, `_`, `.`, `-`. Maximum characters: 64."
+  }
 }
